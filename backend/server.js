@@ -9,7 +9,7 @@ const jwt = require('jsonwebtoken');
 app.use(cors());
 app.use(express.json());
 
-const port = 3000;
+const port = 4000;
 
 
 // MongoDB Connection

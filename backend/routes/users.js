@@ -21,45 +21,52 @@ routes.get('/users', async (req, res, next) => {
 
 // Adding User
 routes.post('/signup', async (req, res) => {
-  const user = req.body;
-  console.log(user);
+    const { username, email, password } = req.body;
 
-  if (!user || !user.username || !user.password) {
-      res.status(400).json({ message: 'Username and password are required' });
-  } else {
-      // Check if user already exists
-      const existingUser = await userModel.findOne({ username: user.username });
-      if (existingUser) {
-          res.status(409).json({ message: 'Username already exists' });
-      } else {
-          // Hash the password
-          const salt = await bcrypt.genSalt(10);
-          const hashedPassword = await bcrypt.hash(user.password, salt);
-          user.password = hashedPassword;
+    // Basic validation
+    if (!username || !email || !password) {
+        return res.status(400).json({ message: 'Username, email, and password are required' });
+    }
 
-          // Create a new user
-          const newUser = new userModel(user);
-          await newUser.save();
-          res.status(201).json({ message: 'User account created successfully' });
-      }
-  }
-});    
+    try {
+        // Check if user already exists
+        const existingUser = await userModel.findOne({ username });
+        if (existingUser) {
+            return res.status(409).json({ message: 'Username already exists' });
+        }
+
+        // Create a new user (password will be hashed in pre-save hook)
+        const newUser = new userModel({ username, email, password });
+        await newUser.save();
+
+        res.status(201).json({ message: 'User account created successfully' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
 
 
 // User Login
 routes.post("/login", async (req, res) => {
+    console.log('Request body:', req.body);
+
+    const { username, password } = req.body;
+    if (!username || !password) {
+        return res.status(400).json({ message: "Username and password are required" });
+    }
+
     try {
-        const { username, password } = req.body;
-        
         // Find the user by username
         const user = await userModel.findOne({ username });
 
         if (!user) {
             return res.status(401).json({ message: "User not found" });
         }
+        console.log('User:', user);
 
-        //Password comparison
+        // Password comparison
         const passwordMatch = await bcrypt.compare(password, user.password);
+        console.log('Password match:', passwordMatch);
 
         if (!passwordMatch) {
             return res.status(401).json({ message: "Invalid password" });
@@ -77,6 +84,7 @@ routes.post("/login", async (req, res) => {
         res.status(500).json(error);
     }
 });
+
 
 // Delete User
 routes.delete("/users/:id", async (req, res) => {
