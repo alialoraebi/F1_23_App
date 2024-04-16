@@ -21,7 +21,10 @@ router.post('/racer-stats', async (req, res) => {
 
         const newStat = new RacerStats(req.body);
         const savedStat = await newStat.save();
-        res.status(201).json(savedStat);
+
+        // Retrieve all stats for this user
+        const userStats = await RacerStats.find({ userId });
+        res.status(201).json({ savedStat, userStats });
     } catch (error) {
         res.status(400).json({ message: error.message });
     }

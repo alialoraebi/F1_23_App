@@ -3,21 +3,19 @@ import React, { createContext, useState } from 'react';
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [auth, setAuth] = useState({ token: null, userId: null });
 
-    const logIn = () => {
-        setIsLoggedIn(true);
-    };
+  const logIn = (token, userId) => {
+    setAuth({ token, userId });
+  };
 
-    const logOut = () => {
-        setIsLoggedIn(false);
-        // Remove the token from the local storage
-        localStorage.removeItem('token');
-    };
+  const logOut = () => {
+    setAuth({ token: null, userId: null });
+  };
 
-    return (
-        <AuthContext.Provider value={{ isLoggedIn, logIn, logOut }}>
-            {children}
-        </AuthContext.Provider>
-    );
+  return (
+    <AuthContext.Provider value={{ ...auth, logIn, logOut }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };

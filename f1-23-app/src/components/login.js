@@ -1,11 +1,11 @@
-import React, { useState, useContext} from 'react';
+import React, { useState, useContext, useEffect} from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom'; 
 import { AuthContext } from './AuthContext';
 
 
 function Login() {
-    const { logIn } = useContext(AuthContext);
+    const {isLoggedIn, logIn } = useContext(AuthContext);
     const navigate = useNavigate(); 
 
 
@@ -14,6 +14,15 @@ function Login() {
         password: ''
     });
     const [errorMessage, setErrorMessage] = useState('');
+
+    useEffect(() => {
+      if (!isLoggedIn) {
+          setFormData({
+              username: '',
+              password: ''
+          });
+      }
+  }, [isLoggedIn]);
 
     const handleChange = (e) => {
         const updatedFormData = { ...formData, [e.target.name]: e.target.value };
@@ -30,8 +39,8 @@ function Login() {
           const response = await axios.post('http://localhost:4000/user/login', formData);
           console.log(response.data);
           setErrorMessage(''); 
-          logIn();
-        //   navigate('/employees'); 
+          logIn((response.data.token, response.data.userId));
+        navigate('/racer-stats'); 
         } catch (error) {
           console.error("Error during login:", error);
           if (error.response && error.response.data) {
