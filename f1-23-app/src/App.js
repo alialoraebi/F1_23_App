@@ -1,5 +1,4 @@
-import React, { useEffect, useContext } from 'react';
-import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import SignUp from './components/signup'; 
 import Login from './components/login';
 import Navbar from './components/navbar'; 
@@ -7,23 +6,11 @@ import StatsPage from './components/statsPage.tsx';
 import AddStatsPage from './components/addStatsPage.tsx';
 import UpdateStatsPage from './components/updateStatsPage';
 import ViewStatsPage from './components/viewStatsPage';
-import { AuthContext } from './components/AuthContext';
 import { AuthProvider } from './components/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import './App.css';
 
-
 function RoutesWithAuth() {
-  const { token } = useContext(AuthContext); 
-  const isLoggedIn = !!token;
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!isLoggedIn) { 
-      
-    }
-  }, [isLoggedIn, navigate]);
-
   return (
     <div className="App">
       <Routes>
@@ -33,6 +20,7 @@ function RoutesWithAuth() {
         <Route path="/racer-stats/add" element={<ProtectedRoute><AddStatsPage /></ProtectedRoute>} /> 
         <Route path="/racer-stats/:id" element={<ProtectedRoute><UpdateStatsPage /></ProtectedRoute>} /> 
         <Route path="/racer-stats/view/:id" element={<ProtectedRoute><ViewStatsPage /></ProtectedRoute>} /> 
+        <Route path="*" element={<Navigate to="/signup" />} />
       </Routes>
     </div>
   );
