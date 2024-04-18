@@ -1,11 +1,12 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import axios from 'axios';
 import { AuthContext } from './AuthContext.js';
-import { useNavigate } from 'react-router-dom';
 import { lapTimes } from '../data/f1_2023_gp_lap_times.ts'
+import AddStatsPage from './addStatsPage.tsx';
+import Modal from './Modal.js';
 
 interface RacerStats {
-    _id: string;  // Assuming the ID field is called 'id', change to '_id' if that's what your API uses
+    _id: string;  
     userId: string;
     grandPrix: string;
     year: number;
@@ -19,16 +20,17 @@ interface RacerStats {
 
 function StatsPage() {
     const [racerStats, setRacerStats] = useState<RacerStats[]>([]);
+    const [showAddStats, setShowAddStats] = useState(false);
+    const [selectedGrandPrix, setSelectedGrandPrix] = useState('');
+    const [selectedStat, setSelectedStat] = useState<RacerStats | null>(null);
     const { token, userId } = useContext(AuthContext);
-    const navigate = useNavigate();
 
     useEffect(() => {
+        const statsData = { userId };
         const fetchStats = async () => {
             try {
-                const response = await axios.get(`http://localhost:4000/api/racer-stats?userId=${userId}`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
+                const response = await axios.post('http://localhost:4000/api/racer-stats', statsData, {
+                    headers: { Authorization: `Bearer ${token}` }
                 });
                 setRacerStats(response.data);
             } catch (error) {
@@ -39,15 +41,57 @@ function StatsPage() {
         fetchStats();
     }, [userId, token]);
 
-    const navigateToAddStats = (grandPrix) => {
-        // Navigate to AddStatsPage with grandPrix as a parameter
-        navigate(`/add-stats/${grandPrix}`);
+    const openAddStatsModal = (grandPrix: string) => {
+        setSelectedStat(null);
+        setSelectedGrandPrix(grandPrix); 
+        setShowAddStats(true);
     };
 
-    const navigateToUserStats = (userStatId) => {
-        // Navigate to a page where the user can view, update, and delete their stat
-        navigate(`/user-stats/${userStatId}`);
+    const openEditStatsModal = (stat: RacerStats) => {
+        setSelectedStat(stat);
+        setShowAddStats(true);
     };
+
+    const closeStatsModal = () => {
+        setShowAddStats(false);
+    };
+
+    const handleSaveStats = async (statsData) => {
+        const endpoint = selectedStat ? `http://localhost:4000/api/racer-stats/${selectedStat._id}` : 'http://localhost:4000/api/racer-stats';
+        const method = selectedStat ? 'put' : 'post';
+        
+        try {
+            const response = await axios[method](endpoint, { ...statsData, userId }, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            if (selectedStat) {
+                // Update an existing stat
+                setRacerStats(prev => prev.map(stat => stat._id === response.data._id ? response.data : stat));
+            } else {
+                // Add a new stat
+                setRacerStats(prev => [...prev, response.data]);
+            }
+            closeStatsModal();
+        } catch (error) {
+            console.error("Error saving stats:", error.response ? error.response.data : error.message);
+        }
+    };
+    
+    const fetchRacerStats = useCallback(async () => {
+        try {
+            const response = await axios.get(`http://localhost:4000/api/racer-stats?userId=${userId}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            setRacerStats(response.data);
+        } catch (error) {
+            console.error("Error fetching stats:", error);
+        }
+    }, [userId, token]); 
+    
+    useEffect(() => {
+        fetchRacerStats();
+    }, [fetchRacerStats]); 
+
 
     return (
         <div>
@@ -64,8 +108,7 @@ function StatsPage() {
                 </thead>
                 <tbody>
                     {lapTimes.map((lapTime, index) => {
-                        // Check if the user has added their stats for this grandPrix
-                        const userStat = racerStats.find(stat => stat.grandPrix === lapTime.grandPrix);
+                        const stat = racerStats.find(s => s.grandPrix === lapTime.grandPrix);
                         return (
                             <tr key={index}>
                                 <td>{lapTime.grandPrix}</td>
@@ -73,10 +116,12 @@ function StatsPage() {
                                 <td>{lapTime.car}</td>
                                 <td>{lapTime.time}</td>
                                 <td>
-                                    {userStat ? (
-                                        <button onClick={() => navigateToUserStats(userStat._id)}>View/Edit</button>
+                                    {stat ? (
+                                        <button onClick={() => openEditStatsModal(stat)}>
+                                            {stat.fastestRaceLap || "No time"}
+                                        </button>
                                     ) : (
-                                        <button onClick={() => navigateToAddStats(lapTime.grandPrix)}>Add Stats</button>
+                                        <button onClick={() => openAddStatsModal(lapTime.grandPrix)}>Add Stat</button>
                                     )}
                                 </td>
                             </tr>
@@ -84,8 +129,19 @@ function StatsPage() {
                     })}
                 </tbody>
             </table>
+            {showAddStats && (
+                <Modal isOpen={showAddStats} onClose={closeStatsModal}>
+                    <AddStatsPage
+                        isOpen={showAddStats}
+                        grandPrix={selectedStat ? selectedStat.grandPrix : selectedGrandPrix}
+                        onClose={closeStatsModal}
+                        onSave={handleSaveStats}
+                    />
+                </Modal>
+            )}
         </div>
     );
+    
 }
 
 export default StatsPage;
