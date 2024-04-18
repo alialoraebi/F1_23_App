@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect} from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom'; 
 import { AuthContext } from './AuthContext';
-
+import { jwtDecode } from 'jwt-decode';
 
 function Login() {
     const {isLoggedIn, logIn } = useContext(AuthContext);
@@ -30,26 +30,33 @@ function Login() {
     };
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (!formData.username || !formData.password) {
-          setErrorMessage('Please fill in all fields.');
-          return;
-        }
-        try {
-          const response = await axios.post('http://localhost:4000/user/login', formData);
-          console.log(response.data);
-          setErrorMessage(''); 
-          logIn((response.data.token, response.data.userId));
+      e.preventDefault();
+      if (!formData.username || !formData.password) {
+        setErrorMessage('Please fill in all fields.');
+        return;
+      }
+      try {
+        const response = await axios.post('http://localhost:4000/user/login', formData);
+        console.log(response.data);
+        setErrorMessage(''); 
+  
+        const decodedToken = jwtDecode(response.data.token);
+        const userId = decodedToken.userId;
+  
+        logIn(response.data.token, userId);
+        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('userId', userId);
+  
         navigate('/racer-stats'); 
-        } catch (error) {
-          console.error("Error during login:", error);
-          if (error.response && error.response.data) {
-            console.log('Error message:', error.response.data.message); 
-            setErrorMessage(error.response.data.message);
-          } else {
-            setErrorMessage('An error occurred. Please try again later.');
-          }
+      } catch (error) {
+        console.error("Error during login:", error);
+        if (error.response && error.response.data) {
+          console.log('Error message:', error.response.data.message); 
+          setErrorMessage(error.response.data.message);
+        } else {
+          setErrorMessage('An error occurred. Please try again later.');
         }
+      }
     };
 
     return (
@@ -76,12 +83,13 @@ function Login() {
         <p className="error-message">
             {errorMessage}
             {errorMessage.includes('User not found') && (
-            <span> <Link to="/" className="signup-link">Sign up here</Link>.</span>
+            <span> <Link to="/signup" className="signup-link">Sign up here</Link>.</span>
             )}
         </p>
         )}
     </form>
     );
 }
+
 
 export default Login;

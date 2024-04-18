@@ -76,6 +76,10 @@ function SignUp() {
       />
       <button type="submit" className="submit-button">Sign Up</button>
   
+      {signUpSuccess && (
+        <p className="success-message">Sign up successful! Please log in.</p>
+      )}
+  
       {errorMessage && (
         <p className="error-message">
           {errorMessage}
