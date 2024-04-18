@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface AddStatsPageProps {
     isOpen: boolean;
@@ -7,7 +7,7 @@ interface AddStatsPageProps {
     onSave: (data: any) => void;  
 }
 
-function AddStatsPage({ isOpen, onClose, onSave }: AddStatsPageProps) {
+function AddStatsPage({ isOpen, grandPrix, onClose, onSave }: AddStatsPageProps) {
     const [formData, setFormData] = useState({
         grandPrix: '',
         year: '',
@@ -18,6 +18,15 @@ function AddStatsPage({ isOpen, onClose, onSave }: AddStatsPageProps) {
         racePosition: '',
         didNotFinish: false
     });
+    
+    useEffect(() => {
+        if (isOpen) {
+            setFormData(prevState => ({
+                ...prevState,
+                grandPrix
+            }));
+        }
+    }, [isOpen, grandPrix]);
 
     if (!isOpen) return null;
 

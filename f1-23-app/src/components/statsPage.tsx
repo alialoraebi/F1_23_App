@@ -72,6 +72,7 @@ function StatsPage() {
                 setRacerStats(prev => [...prev, response.data]);
             }
             closeStatsModal();
+            fetchRacerStats();
         } catch (error) {
             console.error("Error saving stats:", error.response ? error.response.data : error.message);
         }
