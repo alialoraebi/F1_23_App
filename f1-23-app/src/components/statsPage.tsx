@@ -108,7 +108,7 @@ function StatsPage() {
                 </thead>
                 <tbody>
                     {lapTimes.map((lapTime, index) => {
-                        const stat = racerStats.find(s => s.grandPrix === lapTime.grandPrix);
+                        const stat = racerStats.find(s => s.grandPrix === lapTime.grandPrix && s.userId === userId);
                         return (
                             <tr key={index}>
                                 <td>{lapTime.grandPrix}</td>
