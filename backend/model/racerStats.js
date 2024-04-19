@@ -17,30 +17,27 @@ const racerStatsSchema = new mongoose.Schema({
     },
     points:{
         type: Number,
-        required: true,
         min: 0,
         max: 25
     },
     fastestQualiLap: {
         type: String,
         required: true,
-        match: /^\d{2}:\d{2}.\d{3}$/
+        match: /^\d{1}:\d{2}.\d{3}$/
     },
     fastestRaceLap: {
         type: String,
         required: true,
-        match: /^\d{2}:\d{2}.\d{3}$/
+        match: /^\d{1}:\d{2}.\d{3}$/
     },
     qualiPosition:{
         type: Number,
-        required: true,
-        min: 1,
+        min: 0,
         max: 20
     },
     racePosition:{
         type: Number,
-        required: true,
-        min: 1,
+        min: 0,
         max: 20
     },
     didNotFinish: {

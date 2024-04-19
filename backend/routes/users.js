@@ -19,6 +19,24 @@ routes.get('/users', async (req, res, next) => {
     }
 });
 
+// Get User by ID
+routes.get("/users/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        // Find the user by _id
+        const user = await userModel.findById(id);
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        res.status(200).json(user);
+    } catch (error) {
+        res.status(500).json(error);
+    }
+});
+
 // Adding User
 routes.post('/signup', async (req, res) => {
     const { username, email, password } = req.body;
