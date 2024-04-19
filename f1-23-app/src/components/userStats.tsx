@@ -57,7 +57,7 @@ function UserStats({ stat, open, onClose, onDelete, onUpdate }: UserStatsProps) 
         ...prevState,
         [name]: value
     }));
-};
+  };
 
   const handleClose = () => {
     onClose();
@@ -68,69 +68,106 @@ function UserStats({ stat, open, onClose, onDelete, onUpdate }: UserStatsProps) 
   if (!open) return null;
 
   return (
-    <div className="dialog-backdrop">
-      <div className="dialog">
-        {errorMessage && <div style={{color: 'red'}}>{errorMessage}</div>}
-        <h2>{stat.grandPrix}</h2>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+      <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+        {errorMessage && <div className="text-red-500">{errorMessage}</div>}
+        <h2 className="text-2xl font-bold underline mb-4">{stat.grandPrix}</h2>
         {isEditing ? (
           <>
-            <label>
-              Year:
-              <select name="year" value={updatedStat.year} onChange={handleChange} required>
-                <option value="">Select a year</option>
-                <option value="2024">2024</option>
-                <option value="2023">2023</option>
-              </select>
-            </label>
-            <label>
-              Points:
-              <input type="number" name="points" value={updatedStat.points} onChange={handleChange} />
-            </label>
-            <label>
-              Fastest Qualifying Lap:
-              <InputMask mask="9:99:999" value={updatedStat.fastestQualiLap} onChange={handleChange}>
-                {(inputProps) => <input {...inputProps} type="text" name="fastestQualiLap" title="Please enter a valid lap time in the format M:SS:MMM" required />}
-              </InputMask>
-            </label>
-            <label>
-              Fastest Race Lap:
-              <InputMask mask="9:99:999" value={updatedStat.fastestRaceLap} onChange={handleChange}>
-                {(inputProps) => <input {...inputProps} type="text" name="fastestRaceLap" title="Please enter a valid lap time in the format M:SS:MMM" required />}
-              </InputMask>
-            </label>
-            <label>
-              Qualifying Position:
-              <input type="number" name="qualiPosition" value={updatedStat.qualiPosition} onChange={handleChange} />
-            </label>
-            <label>
-              Race Position:
-              <input type="number" name="racePosition" value={updatedStat.racePosition} onChange={handleChange} />
-            </label>
-            <label>
-              Did Not Finish:
-              <input name="didNotFinish" type="checkbox" checked={updatedStat.didNotFinish} onChange={handleChange} />
-            </label>
-            <p>Fastest Lap (Real Data): {fastestLap}</p>
-            <button onClick={handleSave}>Save</button>
+          <div className="mb-4">
+              <label className="block text-gray-700">
+                Year:
+                <select className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" name="year" value={updatedStat.year} onChange={handleChange} required>
+                  <option value="">Select a year</option>
+                  <option value="2024">2024</option>
+                  <option value="2023">2023</option>
+                </select>
+              </label>
+            </div>
+            <div className="mb-4">
+              <label className="block text-gray-700">
+                Points:
+                <select name="points" value={updatedStat.points} onChange={handleChange}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                  <option value="">Select points</option>
+                  {[25, 18, 15, 12, 10, 8, 6, 4, 2, 1].map(point => (
+                    <option key={point} value={point}>{point}</option>
+                  ))}
+                </select>
+              </label>
+            </div>
+            <div className="mb-4">
+              <label className="block text-gray-700">
+                Fastest Qualifying Lap:
+                <InputMask mask="9:99:999" value={updatedStat.fastestQualiLap} onChange={handleChange}>
+                  {(inputProps) => <input className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" {...inputProps} type="text" name="fastestQualiLap" required />}
+                </InputMask>
+              </label>
+            </div>
+            <div className="mb-4">
+              <label className="block text-gray-700">
+                Fastest Race Lap:
+                <InputMask mask="9:99:999" value={updatedStat.fastestRaceLap} onChange={handleChange}>
+                  {(inputProps) => <input className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" {...inputProps} type="text" name="fastestRaceLap" required />}
+                </InputMask>
+              </label>
+            </div>
+            <div className="mb-4">
+              <label className="block text-gray-700">
+                Qualifying Position:
+                <select name="qualiPosition" value={updatedStat.qualiPosition} onChange={handleChange}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                  <option value="">Select a position</option>
+                  {Array.from({ length: 20 }, (_, i) => (
+                    <option key={i + 1} value={i + 1}>{i + 1}</option>
+                  ))}
+                </select>
+              </label>
+            </div>
+            <div className="mb-4">
+              <label className="block text-gray-700">
+                Race Position:
+                <select name="racePosition" value={updatedStat.racePosition} onChange={handleChange}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                  <option value="">Select a position</option>
+                  {Array.from({ length: 20 }, (_, i) => (
+                    <option key={i + 1} value={i + 1}>{i + 1}</option>
+                  ))}
+                </select>
+              </label>
+            </div>
+            <div className="mb-4">
+              <label className="flex items-center text-gray-700">
+                Did Not Finish:
+                <input className="ml-2" type="checkbox" name="didNotFinish" checked={updatedStat.didNotFinish} onChange={handleChange} />
+              </label>
+            </div>
+            <p className="mb-4">Fastest Lap (Real Data): {fastestLap}</p>
+            <div className="flex justify-between space-x-2">
+              <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full" onClick={handleSave}>Save</button>
+              <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full" onClick={handleDelete}>Delete</button>
+              <button className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full" onClick={() => setIsEditing(false)}>Cancel</button>
+            </div>
           </>
         ) : (
           <>
-            <p>Year: {stat.year}</p>
-            <p>Points: {stat.points}</p>
-            <p>Fastest Quali Lap: {stat.fastestQualiLap}</p>
-            <p>Fastest Race Lap: {stat.fastestRaceLap}</p>
-            <p>Quali Position: {stat.qualiPosition}</p>
-            <p>Race Position: {stat.racePosition}</p>
-            <p>Did Not Finish: {stat.didNotFinish ? '✔' : '❌'}</p>
-            <p>Fastest Lap (Real Data): {fastestLap}</p>
-            <button onClick={handleUpdate}>Update</button>
-            <button onClick={handleDelete}>Delete</button>
-            <button onClick={handleClose}>Close</button>
+            <p className="text-lg font-bold mb-2">Year: <span className="font-normal float-right">{stat.year}</span></p>
+            <p className="text-lg font-bold mb-2">Points: <span className="font-normal float-right">{stat.points}</span></p>
+            <p className="text-lg font-bold mb-2">Fastest Quali Lap: <span className="font-normal float-right">{stat.fastestQualiLap}</span></p>
+            <p className="text-lg font-bold mb-2">Fastest Race Lap: <span className="font-normal float-right">{stat.fastestRaceLap}</span></p>
+            <p className="text-lg font-bold mb-2">Quali Position: <span className="font-normal float-right">{stat.qualiPosition}</span></p>
+            <p className="text-lg font-bold mb-2">Race Position: <span className="font-normal float-right">{stat.racePosition}</span></p>
+            <p className="text-lg font-bold mb-2">Did Not Finish: <span className="font-normal float-right">{stat.didNotFinish ? '✔' : '❌'}</span></p>
+            <p className="text-lg font-bold mb-6">Fastest Lap (Real Data): <span className="font-normal float-right">{fastestLap}</span></p>
+            <div className="flex justify-end">
+              <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mr-4 rounded focus:outline-none focus:shadow-outline" onClick={handleUpdate}>Update</button>
+              <button className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" onClick={handleClose}>Close</button>
+            </div>
           </>
         )}
       </div>
     </div>
-  );              
+  );     
 }
 
 export default UserStats;

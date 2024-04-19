@@ -21,7 +21,10 @@ export const lapTimes = [
     { grandPrix: "Brazil", driver: "Lando Norris", car: "MCLAREN ", time: "1:12.486" },
     { grandPrix: "Las Vegas", driver: "Oscar Piastri", car: "MCLAREN ", time: "1:35.490" },
     { grandPrix: "Abu Dhabi", driver: "Max Verstappen", car: "RED BULL RACING", time: "1:26.993" }
-];
+].map(lapTime => ({
+    ...lapTime,
+    car: lapTime.car.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
+}));
 
 export type LapTime = {
     grandPrix: string;

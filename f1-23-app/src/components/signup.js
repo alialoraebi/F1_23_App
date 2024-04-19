@@ -49,14 +49,15 @@ function SignUp() {
 
   
   return (
-    <form onSubmit={handleSubmit} className="signup-form">
+    <form onSubmit={handleSubmit} className="w-full max-w-sm mx-auto mt-20 p-6 bg-white rounded shadow-md">
+      <h1 className="text-2xl font-bold text-center mb-6">Sign Up</h1>
       <input
         type="text"
         name="username"
         value={formData.username}
         onChange={handleChange}
         placeholder="Username"
-        className="form-input"
+        className="form-input block w-full p-3 rounded mb-4 border border-gray-300"
       />
       <input
         type="email"
@@ -64,7 +65,7 @@ function SignUp() {
         value={formData.email}
         onChange={handleChange}
         placeholder="Email"
-        className="form-input"
+        className="form-input block w-full p-3 rounded mb-4 border border-gray-300"
       />
       <input
         type="password"
@@ -72,22 +73,25 @@ function SignUp() {
         value={formData.password}
         onChange={handleChange}
         placeholder="Password"
-        className="form-input"
+        className="form-input block w-full p-3 rounded mb-4 border border-gray-300"
       />
-      <button type="submit" className="submit-button">Sign Up</button>
+      <button type="submit" className="w-full py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700">Sign Up</button>
   
       {signUpSuccess && (
-        <p className="success-message">Sign up successful! Please log in.</p>
+        <p className="text-green-500 mt-4 text-center">Sign up successful! Please log in.</p>
       )}
   
       {errorMessage && (
-        <p className="error-message">
+        <p className="text-red-500 mt-4 text-center">
           {errorMessage}
           {errorMessage.includes('Username already exists') && (
-            <span> <Link to="/login" className="login-link">Login here</Link>.</span>
+            <span> <Link to="/login" className="text-blue-500 hover:underline">Login here</Link>.</span>
           )}
         </p>
       )}
+      <p className="mt-4 text-center">
+        Already have an account? <Link to="/login" className="text-blue-500 hover:underline">Login here</Link>.
+      </p>
     </form>
   );
 }

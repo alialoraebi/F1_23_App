@@ -6,7 +6,7 @@ import StatsPage from './components/statsPage.tsx';
 import AddStatsPage from './components/addStatsPage.tsx';
 import { AuthProvider } from './components/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
-import './App.css';
+import './tailwind.css';
 
 function RoutesWithAuth() {
   return (

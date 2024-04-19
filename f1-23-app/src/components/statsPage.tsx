@@ -123,65 +123,69 @@ function StatsPage() {
     const openUserStats = (stat: RacerStats) => {
         setSelectedStat(stat);
         setShowUserStats(true);
-      };
+    };
       
-      const closeUserStats = () => {
-        setShowUserStats(false);
-      };
+    const closeUserStats = () => {
+    setShowUserStats(false);
+    };
+    
+    const handleDeleteStat = async (id: string) => {
+    try {
+        await axios.delete(`http://localhost:4000/api/racer-stats/${id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+        });
+        setRacerStats(prev => prev.filter(stat => stat._id !== id));
+    } catch (error) {
+        console.error("Error deleting stat:", error.response ? error.response.data : error.message);
+    }
+    };
       
-      const handleDeleteStat = async (id: string) => {
-        try {
-          await axios.delete(`http://localhost:4000/api/racer-stats/${id}`, {
-            headers: { Authorization: `Bearer ${token}` }
-          });
-          setRacerStats(prev => prev.filter(stat => stat._id !== id));
-        } catch (error) {
-          console.error("Error deleting stat:", error.response ? error.response.data : error.message);
-        }
-      };
-      
-      const handleUpdateStat = (stat: RacerStats) => {
+    const handleUpdateStat = (stat: RacerStats) => {
         handleSaveStats(stat);
         openUserStats(stat);
-      };
+    };
 
 
     return (
-        <div>
-            <h1>Welcome, {username}</h1>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Grand Prix</th>
-                        <th>Driver</th>
-                        <th>Car</th>
-                        <th>Fastest Lap</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {lapTimes.map((lapTime, index) => {
-                        const stat = racerStats.find(s => s.grandPrix === lapTime.grandPrix && s.userId === userId);
-                        return (
-                            <tr key={index}>
-                                <td>{lapTime.grandPrix}</td>
-                                <td>{lapTime.driver}</td>
-                                <td>{lapTime.car}</td>
-                                <td>{lapTime.time}</td>
-                                <td>
-                                    {stat ? (
-                                        <button onClick={() => openUserStats(stat)}>
+        <div className="container mx-auto px-4 flex flex-col justify-center">
+            <h1 className="text-2xl font-bold text-left mb-12 mt-12">Welcome, {username}</h1>
+            <div className="overflow-x-auto">
+                <table className="table-auto w-1/2 mb-6 mx-auto">
+                    <thead>
+                        <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                            <th className="py-3 px-6 text-left">Grand Prix</th>
+                            <th className="py-3 px-6 text-left">Driver</th>
+                            <th className="py-3 px-6 text-left">Car</th>
+                            <th className="py-3 px-6 text-left">Fastest Lap</th>
+                            <th className="py-3 px-6 text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody className="text-gray-600 text-sm font-light">
+                        {lapTimes.map((lapTime, index) => {
+                            const stat = racerStats.find(s => s.grandPrix === lapTime.grandPrix && s.userId === userId);
+                            return (
+                                <tr key={index} className="border-b border-gray-200 hover:bg-gray-100">
+                                    <td className="py-3 px-6 text-left">{lapTime.grandPrix}</td>
+                                    <td className="py-3 px-6 text-left">{lapTime.driver}</td>
+                                    <td className="py-3 px-6 text-left">{lapTime.car}</td>
+                                    <td className="py-3 px-6 text-left">{lapTime.time}</td>
+                                    <td className="py-3 px-6 text-center">
+                                        {stat ? (
+                                        <button onClick={() => openUserStats(stat)} className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-full text-center">
                                             {stat.fastestRaceLap || "No time"}
                                         </button>
-                                    ) : (
-                                        <button onClick={() => openAddStatsModal(lapTime.grandPrix)}>Add Stat</button>
-                                    )}
-                                </td>
-                            </tr>
-                        );
-                    })}
-                </tbody>
-            </table>
+                                        ) : (
+                                        <button onClick={() => openAddStatsModal(lapTime.grandPrix)} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded w-full text-center">
+                                            Add
+                                        </button>
+                                        )}
+                                    </td>
+                                </tr>
+                            );
+                        })}
+                    </tbody>
+                </table>
+            </div>
             {showAddStats && (
                 <Modal isOpen={showAddStats} onClose={closeStatsModal}>
                     <AddStatsPage
@@ -204,7 +208,6 @@ function StatsPage() {
             )}
         </div>
     );
-    
 }
 
 export default StatsPage;
