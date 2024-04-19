@@ -40,10 +40,10 @@ function UserStats({ stat, open, onClose, onDelete, onUpdate }: UserStatsProps) 
     }
 
     const finalUpdatedStat = {
-        ...updatedStat,
-        points: updatedStat.points || 0,
-        qualiPosition: updatedStat.qualiPosition || 0,
-        racePosition: updatedStat.racePosition || 0,
+      ...updatedStat,
+      points: updatedStat.points || 0,
+      qualiPosition: updatedStat.qualiPosition || 0,
+      racePosition: updatedStat.racePosition || 0,
     };
 
     onUpdate(finalUpdatedStat);

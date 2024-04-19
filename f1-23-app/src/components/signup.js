@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom'; 
 
-
 function SignUp() {
   const [formData, setFormData] = useState({
     username: '',
@@ -47,7 +46,6 @@ function SignUp() {
     }
   }
 
-  
   return (
     <form onSubmit={handleSubmit} className="w-full max-w-sm mx-auto mt-20 p-6 bg-white rounded shadow-md">
       <h1 className="text-2xl font-bold text-center mb-6">Sign Up</h1>

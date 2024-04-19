@@ -55,7 +55,6 @@ function AddStatsPage({ isOpen, grandPrix, onClose, onSave }: AddStatsPageProps)
             return;
         }
     
-        // Validate lap time format
         if (!validateLapTime(formData.fastestQualiLap) || !validateLapTime(formData.fastestRaceLap)) {
             setErrorMessage("Invalid lap time format. Please use the format M:SS:MMM.");
             return;
