@@ -34,7 +34,7 @@ git clone https://github.com/alialoraebi/F1_23_App.git
 ```bash
 npm install
 ```
-Inside the backend directory, create .env file and add your own MongoDB PASSWORD and JWT_SECRET. Make sure the uri in server.js is changed to match with your MongoDB account.
+Inside the backend directory, create .env file and add your own MongoDB PASSWORD and JWT_SECRET. Make sure the MongoDB connection in server.js is changed to match with your MongoDB account.
 
 3. Start the development server for "backend" and "f1-23-app" directories:
 ```bash
