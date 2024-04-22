@@ -5,52 +5,30 @@ const cors = require('cors');
 const app = express();
 const jwt = require('jsonwebtoken');
 
+const db = require("./db");
+const authenticateToken = require("./middleware/authenticateToken");
 
 app.use(cors());
 app.use(express.json());
 
-const port = 4000;
-
+// Server port
+const port = process.env.PORT || 4000;
 
 // MongoDB Connection
-const DB_HOST = "cluster0.z7sm5qd.mongodb.net";
-const DB_USER = "aaloreabi2000";
-const DB_PASSWORD = process.env.PASSWORD;
-const DB_NAME = "f1_23_app";
-const DB_CONNECTION_STRING = `mongodb+srv://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/${DB_NAME}?retryWrites=true&w=majority`;
+db.connect();
 
-mongoose.connect(DB_CONNECTION_STRING).then(() => {
-    console.log('Success Mongodb connection');
-  }).catch(err => {
-    console.error('Error connecting to MongoDB:', err);
-});
-
-const authenticateToken = (req, res, next) => {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
-
-  if (token == null) {
-    return res.status(401).json({ message: 'No token provided' });
-  }
-
-  console.log(token); 
-
-  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-    if (err) {
-      console.error(err);
-      return res.status(403).json({ message: 'Invalid or expired token' });
-    }
-    req.user = user;
-    next();
-  });
-};
-
+// Routes
 const userRoutes = require("./routes/users");
 app.use("/user", userRoutes);
 
 const statsRoutes = require('./routes/stats');
 app.use('/api', authenticateToken, statsRoutes);
 
+// Global error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
+})
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
