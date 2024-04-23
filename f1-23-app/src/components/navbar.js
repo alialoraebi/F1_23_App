@@ -1,37 +1,38 @@
-import React, { useContext} from 'react';
-import { Link } from 'react-router-dom';
-import { AuthContext } from './AuthContext'; 
+import React, { useContext } from "react";
+import { Link } from "react-router-dom";
+import { AuthContext } from "./AuthContext";
 
 function Navbar() {
-  const { isLoggedIn, logOut } = useContext(AuthContext); 
+  const { isLoggedIn, logOut } = useContext(AuthContext);
 
   const handleLogOut = () => {
-    if (window.confirm('Are you sure you want to log out?')) {
-      logOut(); 
-      localStorage.removeItem('token'); 
-      localStorage.removeItem('userId'); 
+    if (window.confirm("Are you sure you want to log out?")) {
+      logOut();
+      localStorage.removeItem("token");
+      localStorage.removeItem("userId");
     }
   };
 
   return (
-    <header className="bg-gray-800 text-white py-4">
-      <div className="container max-w-full flex justify-between items-center">
-        <div className="ml-8">
-          <h1 className="text-xl font-bold">F1 23 Stats</h1>
+    <header>
+    <nav class="bg-white border-gray-200 px-4 lg:px-6 py-2.5 dark:bg-gray-800">
+        <div class="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
+            <a href="/" class="flex items-center">
+                <img src="https://cdn-icons-png.flaticon.com/512/2418/2418779.png" class="mr-3 h-6 sm:h-9" alt="Flowbite Logo" />
+                <span class="self-center text-xl font-semibold whitespace-nowrap dark:text-white">F1 23 Stats</span>
+            </a>
+            <div class="flex items-center lg:order-2">
+                {!isLoggedIn ? (
+                  <>
+                    <Link to="/signup" className="text-gray-800 dark:text-white hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800">Sign Up</Link>
+                    <Link to="/login" className="text-gray-800 dark:text-white hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800">Login</Link>
+                  </>
+                  ) : (
+                    <button onClick={handleLogOut} className="text-gray-800 dark:text-white hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800">Logout</button>
+                )}
+            </div>
         </div>
-        <div className="ml-auto">
-          <nav className='mr-8'>
-            {!isLoggedIn ? (
-              <>
-                <Link to="/signup" className="text-white px-4 py-2 rounded hover:bg-gray-700 transition-colors">Sign Up</Link>
-                <Link to="/login" className="text-white px-4 py-2 rounded hover:bg-gray-700 transition-colors">Login</Link>
-              </>
-            ) : (
-              <button onClick={handleLogOut} className="text-white px-4 py-2 rounded hover:bg-red-600 transition-colors">Logout</button>
-            )}
-          </nav>
-        </div>
-      </div>
+    </nav>
     </header>
   );
 }

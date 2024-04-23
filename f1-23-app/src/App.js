@@ -1,4 +1,6 @@
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { ChakraProvider } from '@chakra-ui/react'
+
 import SignUp from './components/signup'; 
 import Login from './components/login';
 import Navbar from './components/navbar'; 
@@ -6,7 +8,7 @@ import StatsPage from './components/statsPage.tsx';
 import AddStatsPage from './components/addStatsPage.tsx';
 import { AuthProvider } from './components/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
-import './tailwind.css';
+import './App.css';
 
 function RoutesWithAuth() {
   return (
@@ -24,12 +26,14 @@ function RoutesWithAuth() {
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
-        <Navbar />
-        <RoutesWithAuth />
-      </Router>
-    </AuthProvider>
+    <ChakraProvider>
+      <AuthProvider>
+        <Router>
+          <Navbar />
+          <RoutesWithAuth />
+        </Router>
+      </AuthProvider>
+    </ChakraProvider>
   );
 }
 
