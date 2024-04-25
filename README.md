@@ -1,4 +1,4 @@
-# F1 23 Stats Web Application
+# F1 23 Results Web Application
 
 ## Introduction
 
@@ -9,7 +9,7 @@ F1 23 Stats is a web application for Formula 1 enthusiasts to keep track of the 
 - User Authentication: Secure sign-up and login functionality.
 - Lap Times Display: A table of lap times from the 2023 season.
 - Stat Recording: Users can add, view, edit, and delete stats for each grand prix.
-- Real-time Updates: Lap times and stats are updated in realtime.
+- Real-time Updates: Lap times and stats are updated in real time.
 - Responsive Design: Compatible with various devices and screen sizes.
 
 ## Technologies Used
